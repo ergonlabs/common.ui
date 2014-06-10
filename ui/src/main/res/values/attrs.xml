@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="CalendarView">
+        <attr name="minDate" format="enum">
+            <enum name="today" value="1" />
+            <enum name="yesterday" value="2" />
+            <enum name="tomorrow" value="3" />
+            <enum name="in1month" value="10" />
+            <enum name="in2months" value="11" />
+            <enum name="in3months" value="12" />
+            <enum name="in4months" value="13" />
+            <enum name="from1monthAgo" value="20" />
+            <enum name="from2monthsAgo" value="21" />
+            <enum name="from3monthsAgo" value="22" />
+            <enum name="from4monthsAgo" value="23" />
+        </attr>
+        <attr name="maxDate" format="enum">
+            <enum name="today" value="1" />
+            <enum name="yesterday" value="2" />
+            <enum name="tomorrow" value="3" />
+            <enum name="in1month" value="10" />
+            <enum name="in2months" value="11" />
+            <enum name="in3months" value="12" />
+            <enum name="in4months" value="13" />
+            <enum name="to1monthAgo" value="20" />
+            <enum name="to2monthsAgo" value="21" />
+            <enum name="to3monthsAgo" value="22" />
+            <enum name="to4monthsAgo" value="23" />
+        </attr>
+        <attr name="startOfWeek" format="enum">
+            <enum name="sunday" value="1" />
+            <enum name="monday" value="2" />
+            <enum name="tuesday" value="3" />
+            <enum name="wednesday" value="4" />
+            <enum name="thursday" value="5" />
+            <enum name="friday" value="6" />
+            <enum name="saturday" value="7" />
+        </attr>
+        <attr name="timeZone" format="string" />
+    </declare-styleable>
+
+</resources>
