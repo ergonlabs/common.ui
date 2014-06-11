@@ -6,6 +6,10 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.TextView;
 
+import com.ergonlabs.common.ui.DateInfo;
+
+import java.util.Calendar;
+
 /**
  * Created by stefanrusek on 6/10/14.
  */
@@ -38,10 +42,16 @@ public class CellView extends TextView {
         super.onMeasure(widthMeasureSpec, widthMeasureSpec);
     }
 
-    public void setDate(long date) {
+    public void setDate(long date, int dayOfMonth, DateInfo dateInfo) {
         this.date = date;
 
-        String s = DateUtils.formatDateTime(getContext(), date, DateUtils.FORMAT_NO_YEAR | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NUMERIC_DATE);
-        setText(s);
+        setText(Integer.toString(dayOfMonth));
+
+        setBackgroundResource(android.R.color.transparent);
+
+        if (dateInfo != null) {
+            if (dateInfo.backgroundRes != null)
+                setBackgroundResource(dateInfo.backgroundRes);
+        }
     }
 }
