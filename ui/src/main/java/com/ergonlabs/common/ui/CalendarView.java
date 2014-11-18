@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 
 import com.ergonlabs.common.ui.internal.calendar.DateFormat;
 import com.ergonlabs.common.ui.internal.calendar.DateHelper;
@@ -121,10 +120,7 @@ public class CalendarView extends FrameLayout {
             linearLayout.addView(monthView);
         }
 
-        ScrollView scrollView = new ScrollView(getContext());
-        scrollView.addView(linearLayout);
-        addViewInLayout(scrollView, -1, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT), true);
-
+        addViewInLayout(linearLayout, -1, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT), true);
         needsNewAdapter = false;
     }
 
