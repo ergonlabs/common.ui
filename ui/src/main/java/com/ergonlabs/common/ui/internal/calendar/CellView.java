@@ -1,14 +1,11 @@
 package com.ergonlabs.common.ui.internal.calendar;
 
 import android.content.Context;
-import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.TextView;
 
 import com.ergonlabs.common.ui.DateInfo;
-
-import java.util.Calendar;
 
 /**
  * Created by stefanrusek on 6/10/14.

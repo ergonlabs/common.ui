@@ -20,7 +20,7 @@ public class DateFormat {
 
         dateInfo = new HashMap<>();
         if (srcInfo != null)
-            for (DateInfo info: srcInfo)
+            for (DateInfo info : srcInfo)
                 dateInfo.put(dh.normalize(info.date, DateHelper.MODE_MIN), info);
     }
 

@@ -1,8 +1,8 @@
 package com.ergonlabs.common.ui;
 
 /**
-* Created by stefanrusek on 6/11/14.
-*/
+ * Created by stefanrusek on 6/11/14.
+ */
 public class DateInfo {
     public long date;
     public Integer backgroundRes;
