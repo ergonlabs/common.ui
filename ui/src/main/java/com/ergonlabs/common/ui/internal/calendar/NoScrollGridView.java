@@ -22,7 +22,7 @@ public class NoScrollGridView extends GridView {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int heightSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE << 2, MeasureSpec.AT_MOST);
+        int heightSpec = MeasureSpec.makeMeasureSpec(MEASURED_SIZE_MASK, MeasureSpec.AT_MOST);
         super.onMeasure(widthMeasureSpec, heightSpec);
     }
 }
