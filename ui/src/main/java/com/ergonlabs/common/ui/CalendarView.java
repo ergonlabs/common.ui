@@ -9,42 +9,16 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.ergonlabs.common.ui.internal.calendar.DateFormat;
-import com.ergonlabs.common.ui.internal.calendar.DateHelper;
 import com.ergonlabs.common.ui.internal.calendar.MonthView;
 
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.List;
 import java.util.TimeZone;
 
 public class CalendarView extends FrameLayout {
-    public static final int DATE_TODAY = DateHelper.DATE_TODAY;
-    public static final int DATE_YESTERDAY = DateHelper.DATE_YESTERDAY;
-    public static final int DATE_TOMORROW = DateHelper.DATE_TOMORROW;
-    public static final int DATE_THIS_MONTH = DateHelper.DATE_THIS_MONTH;
-    public static final int DATE_ONE_MONTH = DateHelper.DATE_ONE_MONTH;
-    public static final int DATE_TWO_MONTHS = DateHelper.DATE_TWO_MONTHS;
-    public static final int DATE_THREE_MONTHS = DateHelper.DATE_THREE_MONTHS;
-    public static final int DATE_FOUR_MOUNTS = DateHelper.DATE_FOUR_MOUNTS;
-    public static final int DATE_ONE_MONTH_AGO = DateHelper.DATE_ONE_MONTH_AGO;
-    public static final int DATE_TWO_MONTHS_AGO = DateHelper.DATE_TWO_MONTHS_AGO;
-    public static final int DATE_THREE_MONTHS_AGO = DateHelper.DATE_THREE_MONTHS_AGO;
-    public static final int DATE_FOUR_MONTHS_AGO = DateHelper.DATE_FOUR_MONTHS_AGO;
 
-    long startDate;
-    long endDate;
-    long minDate;
-    long maxDate;
-
-    int monthBackground = 0;
-    int monthPadding = 0;
-
-    boolean needsNewAdapter = true;
-
-    DateHelper dh = new DateHelper();
-    DateFormat df = new DateFormat(null, null, null, dh);
-
+    CalendarAdapter adapter;
+    int monthPadding;
 
     public CalendarView(Context context) {
         this(context, null);
@@ -57,20 +31,21 @@ public class CalendarView extends FrameLayout {
     public CalendarView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
+        adapter = new CalendarAdapter(context);
+
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.CalendarView, 0, 0);
 
         try {
-            int startOfWeek = a.getInteger(R.styleable.CalendarView_startOfWeek, Calendar.SUNDAY);
-            dh.setStartOfWeek(Math.min(Calendar.SATURDAY, Math.max(Calendar.SUNDAY, startOfWeek)));
+            setStartOfWeek(a.getInteger(R.styleable.CalendarView_startOfWeek, Calendar.SUNDAY));
 
             setDateRange(
-                    a.getInteger(R.styleable.CalendarView_minDate, DATE_THIS_MONTH),
-                    a.getInteger(R.styleable.CalendarView_maxDate, DATE_THIS_MONTH)
+                    a.getInteger(R.styleable.CalendarView_minDate, CalendarAdapter.DATE_THIS_MONTH),
+                    a.getInteger(R.styleable.CalendarView_maxDate, CalendarAdapter.DATE_THIS_MONTH)
             );
 
             String tzName = a.getString(R.styleable.CalendarView_timeZone);
             if (tzName != null)
-                dh.setTimeZone(TimeZone.getTimeZone(tzName));
+                setTimeZone(TimeZone.getTimeZone(tzName));
         } finally {
             a.recycle();
         }
@@ -89,9 +64,6 @@ public class CalendarView extends FrameLayout {
     }
 
     private void ensureSetup() {
-        if (!needsNewAdapter)
-            return;
-
         removeAllViews();
 
         LinearLayout linearLayout = new LinearLayout(getContext());
@@ -102,11 +74,9 @@ public class CalendarView extends FrameLayout {
             linearLayout.setPadding(padding, padding, padding, padding);
         }
 
-        List<DateHelper.MonthInfo> months = dh.getMonths(minDate, maxDate);
-        for (DateHelper.MonthInfo info : months) {
-            MonthView monthView = new MonthView(getContext(), info.minDate, info.maxDate, dh, df);
-            if (monthBackground != 0)
-                monthView.setBackgroundResource(monthBackground);
+        int count = adapter.getCount();
+        for (int i = 0; i < count; i++) {
+            MonthView monthView = (MonthView) adapter.getMonth(i, linearLayout, false);
             if (monthPadding != 0) {
                 int padding = getResources().getDimensionPixelSize(monthPadding);
                 monthView.setPadding(padding, padding, padding, padding);
@@ -121,69 +91,58 @@ public class CalendarView extends FrameLayout {
         }
 
         addViewInLayout(linearLayout, -1, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT), true);
-        needsNewAdapter = false;
     }
 
     public long getStartDate() {
-        return dh.getStartOfWeek();
+        return adapter.getStartOfWeek();
     }
 
     public long getEndDate() {
-        return endDate;
+        return adapter.getEndDate();
     }
 
     public long getMinDate() {
-        return minDate;
+        return adapter.getMinDate();
     }
 
     public long getMaxDate() {
-        return maxDate;
+        return adapter.getMaxDate();
     }
 
     public void setDateRange(long minDate, long maxDate) {
-        this.minDate = dh.normalize(minDate, DateHelper.MODE_MIN);
-        this.maxDate = dh.normalize(maxDate, DateHelper.MODE_MAX, dh.getLastSize());
-        refresh();
-    }
-
-    private void refresh() {
-        this.startDate = dh.normalize(this.minDate, DateHelper.MODE_MIN, DateHelper.SIZE_MONTH, DateHelper.PAD_START_OF_WEEK);
-        this.endDate = dh.normalize(this.maxDate, DateHelper.MODE_MAX, DateHelper.SIZE_MONTH, DateHelper.PAD_END_OF_WEEK);
-        if (!needsNewAdapter) {
-            this.needsNewAdapter = true;
-            requestLayout();
-        }
+        adapter.setDateRange(minDate, maxDate);
     }
 
     public TimeZone getTimeZone() {
-        return dh.getTimeZone();
+        return adapter.getTimeZone();
+    }
+
+    public void setTimeZone(TimeZone timeZone) {
+        adapter.setTimeZone(timeZone);
     }
 
     public int getStartOfWeek() {
-        return dh.getStartOfWeek();
+        return adapter.getStartOfWeek();
     }
 
     public void setStartOfWeek(int startOfWeek) {
-        dh.setStartOfWeek(startOfWeek);
-        refresh();
+        adapter.setStartOfWeek(startOfWeek);
     }
 
     public void setDateInfo(Collection<DateInfo> infos) {
-        setDateInfo(infos, null, null);
+        adapter.setDateInfo(infos);
     }
 
     public void setDateInfo(Collection<DateInfo> infos, DateInfo defaultMonthDays, DateInfo nonMonthDays) {
-        df = new DateFormat(infos, defaultMonthDays, nonMonthDays, dh);
-        refresh();
+        adapter.setDateInfo(infos, defaultMonthDays, nonMonthDays);
     }
 
     public int getMonthBackgroundResource() {
-        return monthBackground;
+        return adapter.getMonthBackgroundResource();
     }
 
     public void setMonthBackgroundResource(int monthBackgroundRes, int monthPaddingDimenRes) {
-        this.monthBackground = monthBackgroundRes;
         this.monthPadding = monthPaddingDimenRes;
-        refresh();
+        adapter.setMonthBackgroundResource(monthBackgroundRes);
     }
 }

@@ -49,7 +49,7 @@ public class DateHelper {
     }
 
     public void setStartOfWeek(int startOfWeek) {
-        this.startOfWeek = startOfWeek;
+        this.startOfWeek = Math.min(Calendar.SATURDAY, Math.max(Calendar.SUNDAY, startOfWeek));
     }
 
     public int getLastSize() {
