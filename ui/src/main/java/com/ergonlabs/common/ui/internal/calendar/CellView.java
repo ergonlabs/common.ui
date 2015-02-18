@@ -3,6 +3,7 @@ package com.ergonlabs.common.ui.internal.calendar;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.TextView;
 
 import com.ergonlabs.common.ui.DateInfo;
@@ -10,7 +11,7 @@ import com.ergonlabs.common.ui.DateInfo;
 /**
  * Created by stefanrusek on 6/10/14.
  */
-public class CellView extends TextView {
+public class CellView extends TextView implements DateInfo.Cell {
 
     private long date;
 
@@ -47,8 +48,24 @@ public class CellView extends TextView {
         setBackgroundResource(android.R.color.transparent);
 
         if (dateInfo != null) {
-            if (dateInfo.backgroundRes != null)
-                setBackgroundResource(dateInfo.backgroundRes);
+            setDateInfo(dateInfo);
         }
+    }
+
+    public void setDateInfo(final DateInfo dateInfo) {
+        if (dateInfo.backgroundRes != null)
+            dateInfo.setBackground(this);
+        setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dateInfo.onClick(CellView.this, date);
+            }
+        });
+        setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return dateInfo.onLongClick(CellView.this, date);
+            }
+        });
     }
 }
