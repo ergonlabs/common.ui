@@ -53,8 +53,7 @@ public class CellView extends TextView implements DateInfo.Cell {
     }
 
     public void setDateInfo(final DateInfo dateInfo) {
-        if (dateInfo.backgroundRes != null)
-            dateInfo.setBackground(this);
+        dateInfo.setBackground(this);
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

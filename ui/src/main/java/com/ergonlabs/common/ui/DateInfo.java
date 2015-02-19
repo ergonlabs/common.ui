@@ -2,8 +2,6 @@ package com.ergonlabs.common.ui;
 
 import android.view.View;
 
-import com.ergonlabs.common.ui.internal.calendar.CellView;
-
 /**
  * Created by stefanrusek on 6/11/14.
  */
@@ -31,7 +29,8 @@ public class DateInfo {
     }
 
     public void setBackground(View cell) {
-        cell.setBackgroundResource(backgroundRes);
+        if (backgroundRes != 0)
+            cell.setBackgroundResource(backgroundRes);
     }
 
     public interface Cell {
